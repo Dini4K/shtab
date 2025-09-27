@@ -1,0 +1,91 @@
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="pull-right">
+        <button type="button" id="btn-import" class="btn btn-success"><i class="fa fa-download"></i> Импорт заказов</button>
+        <button type="button" id="btn-batch-create" class="btn btn-primary" disabled><i class="fa fa-plus"></i> Создать выбранные</button>
+      </div>
+      <h1>{{ heading_title }}</h1>
+    </div>
+  </div>
+
+  <div class="container-fluid">
+    {{ menu }}
+    
+    <!-- Фильтры -->
+    <div class="well">
+      <div class="row">
+        <div class="col-sm-3">
+          <div class="form-group">
+            <label class="control-label">Маркетплейс</label>
+            <select name="filter_marketplace" class="form-control">
+              <option value="">Все</option>
+              <option value="ozon">OZON</option>
+              <option value="wildberries">Wildberries</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="form-group">
+            <label class="control-label">Статус</label>
+            <select name="filter_status" class="form-control">
+              <option value="">Все</option>
+              <option value="new">Новый</option>
+              <option value="processing">В обработке</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Таблица заказов -->
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover">
+        <thead>
+          <tr>
+            <td width="1"><input type="checkbox" id="select-all"></td>
+            <td>ID</td>
+            <td>Маркетплейс</td>
+            <td>Номер заказа</td>
+            <td>Клиент</td>
+            <td>Сумма</td>
+            <td>Статус</td>
+            <td>Дата</td>
+            <td>Действия</td>
+          </tr>
+        </thead>
+        <tbody>
+          {% for order in orders %}
+          <tr>
+            <td><input type="checkbox" name="selected[]" value="{{ order.shtab_order_id }}"></td>
+            <td>{{ order.shtab_order_id }}</td>
+            <td><span class="label label-info">{{ order.marketplace }}</span></td>
+            <td>{{ order.external_order_number }}</td>
+            <td>{{ order.customer_name }}</td>
+            <td>{{ order.total_amount|number_format(2) }} ₽</td>
+            <td><span class="label label-{{ order.order_status == 'new' ? 'warning' : 'success' }}">{{ order.order_status }}</span></td>
+            <td>{{ order.order_date|date('d.m.Y H:i') }}</td>
+            <td>
+              <button type="button" data-order-id="{{ order.shtab_order_id }}" class="btn btn-primary btn-create-order" {{ order.is_processed ? 'disabled' : '' }}>
+                <i class="fa fa-cart-plus"></i>
+              </button>
+              <a href="{{ order.edit_url }}" class="btn btn-info"><i class="fa fa-eye"></i></a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-6 text-left">{{ pagination }}</div>
+      <div class="col-sm-6 text-right">{{ results }}</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// JavaScript для управления заказами будет здесь
+</script>
+{{ footer }}
